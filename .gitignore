@@ -1,0 +1,6 @@
+# text backups
+*~
+*.swp
+
+# luacov stuff
+luacov*
