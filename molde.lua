@@ -1,42 +1,61 @@
 local lpeg = require 'lpeg'
 local re = require 're'
 
-local molde = {
-	__script_prefix = "local __molde = {};",
-	__script_suffix = "return __molde_table_concat(__molde)",
-	__newline = '\n',
-}
+local molde = {}
 
-local grammar = re.compile([[
-Pattern	<- {| '' -> __script_prefix
-			  ( Value / Statement / Literal )*
-			  '' -> __script_suffix
-			  !.
-		   |}
+local grammar = re.compile[[
+Pattern	<- {| ( Value / Statement / Literal )* |} !.
 
-Value	<- "{{" -> '__molde_table_insert(__molde, ' { ValueContent } "}}" -> ');'
+Value	<- "{{" {| {:value: ValueContent :} |} "}}"
 ValueContent	<- (!"}}" .)+
--- CloseValue	<- !"}}" -> ');' /  {.} CloseValue
 
-Statement	<- "{%" { StatementContent } "%}" -> __newline
+Statement	<- "{%" {| {:statement: StatementContent :} |} "%}"
 StatementContent	<- (!"%}" .)+
--- CloseStatement	<- !"%}" .
 
-Literal	<- '' -> '__molde_table_insert(__molde, [===[' { LiteralContent } '' -> ']===]);'
+Literal	<- {| {:literal: LiteralContent :} |}
 LiteralContent	<- ( !('{' [{%]) Char)+
 Char	<- '\{' -> '{' / .
-]], molde)
+]]
 
+--- Parse a template, returning a table with the matched contents
+--
+-- The parser tags the contents as:
+-- + Literal: text that should be just copied to result
+-- + Value: a value to be substituted using Lua, usually a variable. It will be
+--   stringified using `tostring`
+-- + Statement: one or more Lua statements that will be copied directly into the
+--   compiled function
+--
+-- Results are in the format `{['literal' | 'value' | 'statement'] = <captured value>}`
+function molde.parse(template)
+	return grammar:match(template)
+end
+
+--- Compiles a table with contents to Lua code that generates the (hopefully)
+-- desired result
+--
+-- @return Generated code string
 function molde.compile(template)
-	return table.concat(grammar:match(template))
+	local contents = molde.parse(template)
+	local pieces = {}
+	for _, c in ipairs(contents) do
+		local key, v = next(c)
+		if key == 'literal' then
+			-- table.insert(
+		end
+	end
+	return table.concat(pieces, '\n')
 end
 
 
 function molde.load(template, env)
 	local generator_code = molde.compile(template)
-	env.__molde_table_insert = table.insert
-	env.__molde_table_concat = table.concat
-	return load(generator_code, 'molde generator', 't', env)
+	local __molde = {
+		insert = table.insert,
+		concat = table.concat,
+		__index = env
+	}
+	return load(generator_code, 'molde generator', 't', setmetatable(__molde, __molde))
 end
 
 
