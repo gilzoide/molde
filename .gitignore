@@ -4,3 +4,6 @@
 
 # luacov stuff
 luacov*
+
+# ldoc output
+doc/

@@ -25,7 +25,7 @@ local molde = {
 	__script_literal = "table.insert(__molde, [%s[%s]%s])",
 	__script_value = "table.insert(__molde, tostring(%s))",
 	__script_statement = "%s",
-	__string_bracket_level = 3,
+	string_bracket_level = 1,
 }
 
 -- Parser errors
@@ -56,16 +56,7 @@ LiteralContent	<- ( !('{' [{%]) Char)+
 Char	<- '\{' -> '{' / '\}' -> '}' / .
 ]]
 
---- Parse a template, returning a table with the matched contents
---
--- The parser tags the contents as:
--- + Literal: text that should be just copied to result
--- + Value: a value to be substituted using Lua, usually a variable. It will be
---   stringified using `tostring`
--- + Statement: one or more Lua statements that will be copied directly into the
---   compiled function
---
--- Results are in the format `{['literal' | 'value' | 'statement'] = <captured value>}`
+
 function molde.parse(template)
 	local res, label, suf = grammar:match(template)
 	if res then
@@ -75,21 +66,20 @@ function molde.parse(template)
 	end
 end
 
---- Compiles a table with contents to Lua code that generates the (hopefully)
--- desired result
---
--- @return Generated code string
+
 function molde.compile(template)
-	local contents = molde.parse(template)
+	local contents, err = molde.parse(template)
+	if contents == nil then return nil, err end
+
 	local pieces = {}
 	table.insert(pieces, molde.__script_prefix)
 	for _, c in ipairs(contents) do
 		local key, v = next(c)
 		if key == 'literal' then
-			table.insert(pieces, molde.__script_literal:format(v))
+			local eq = string.rep('=', molde.string_bracket_level)
+			table.insert(pieces, molde.__script_literal:format(eq, v, eq))
 		elseif key == 'value' then
-			local eq = string.rep(molde.__string_bracket_level)
-			table.insert(pieces, molde.__script_value:format(eq, v, eq))
+			table.insert(pieces, molde.__script_value:format(v))
 		elseif key == 'statement' then
 			table.insert(pieces, molde.__script_statement:format(v))
 		end
@@ -99,9 +89,6 @@ function molde.compile(template)
 end
 
 
---- Compiles the template, returning a closure that executes the substitution
---
--- @raise When resulting Lua code is not valid
 function molde.load(template)
 	local code = molde.compile(template)
 	return function(env)
@@ -115,14 +102,11 @@ function molde.load(template)
 end
 
 
---- Same as `molde.load`, but loads the template from a file
---
--- @raise When file can't be opened, or resulting Lua code is not valid
-function molde.loadfile(template_file, env)
+function molde.loadfile(template_file)
 	local file = assert(io.open(template_file, 'r'))
 	local file_contents = file:read('a')
 	file:close()
-	return molde.load(file_contents, env)
+	return molde.load(file_contents)
 end
 
 return molde

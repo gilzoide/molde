@@ -6,10 +6,13 @@ describe('Molde parse function', function()
 	end)
 
 	it('content tags', function()
-		local one_of_each = molde.parse('literal {{ value }}{% statement %}')
-		assert.are.same('literal', next(one_of_each[1]))
-		assert.are.same('value', next(one_of_each[2]))
-		assert.are.same('statement', next(one_of_each[3]))
+		local one_of_each = molde.parse('literal {{ value }} {% statement %}')
+		assert.are.same({
+			{literal = 'literal '},
+			{value = ' value '},
+			{literal = ' '},
+			{statement = ' statement '},
+		}, one_of_each)
 	end)
 
 	it('invalid template', function()
