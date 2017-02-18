@@ -26,29 +26,32 @@ local molde = {
 	__script_value = "table.insert(__molde, tostring(%s))",
 	__script_statement = "%s",
 	string_bracket_level = 1,
+	errors = {},
 }
 
 -- Parser errors
 local parseErrors = {}
 parseErrors[0] = "PEG couldn't parse"
+parseErrors.PegError = 0
 local function addError(label, msg)
 	table.insert(parseErrors, msg)
 	parseErrors[label] = #parseErrors
+	molde.errors[label] = msg
 end
-addError('ValueError', "closing '}}' expected")
-addError('StatementError', "closing '%}' expected")
+addError('ClosingValueError', "closing '}}' expected")
+addError('ClosingStatementError', "closing '%}' expected")
+addError('EmptyValueError', "empty value after '{{'")
+addError('EmptyStatementError', "empty statement after '{%'")
 re.setlabels(parseErrors)
-
-molde.errors = parseErrors
 
 local grammar = re.compile[[
 Pattern	<- {| ( Value / Statement / Literal )* |} !.
 
-Value	<- "{{" {| {:value: {~ ValueContent ~} :} |} ("}}" / %{ValueError})
-ValueContent	<- (!"}}" Char)+
+Value	<- "{{" {| {:value: {~ ValueContent ~} :} |} ("}}" / %{ClosingValueError})
+ValueContent	<- (!"}}" Char)+ / %{EmptyValueError}
 
-Statement	<- "{%" {| {:statement: {~ StatementContent ~} :} |} ("%}" / %{StatementError})
-StatementContent	<- (!"%}" Char)+
+Statement	<- "{%" {| {:statement: {~ StatementContent ~} :} |} ("%}" / %{ClosingStatementError})
+StatementContent	<- (!"%}" Char)+ / %{EmptyStatementError}
 
 Literal	<- {| {:literal: {~ LiteralContent ~} :} |}
 LiteralContent	<- ( !('{' [{%]) Char)+

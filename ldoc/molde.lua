@@ -7,6 +7,15 @@ local molde = {}
 -- necessary string delimiters for literals.
 molde.string_bracket_level = 1
 
+--- Parse errors that can occur in a template
+molde.errors = {
+	PegError = nil,	        -- When PEG can't parse
+	ClosingValueError = nil,     -- There is no closing `"}}"` to a value
+	ClosingStatementError = nil, -- There is no closing `"%}"` to a statement
+	EmptyValueError = nil,       -- There is no content after value opening `"{{"`
+	EmptyStatementError = nil,   -- There is no content after statement opening `"{%"`
+}
+
 --- Parse a template, returning a table with the matched contents.
 --
 -- The parser tags the contents as:
