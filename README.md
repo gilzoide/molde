@@ -20,7 +20,7 @@ There are 3 constructs templates recognize:
 
 __Values__ are delimited by matching `{{` and `}}`, __statements__ by `{%` and
 `%}`, and everything else is considered __literal__. Braces can be escaped
-using a trailing backslash: `\\{` or `\\}`.
+using a trailing backslash.
 
 Example:
 
