@@ -20,6 +20,7 @@ local lpeg = require 'lpeglabel'
 local re = require 'relabel'
 
 local molde = {
+	VERSION = "0.1.0",
 	__script_prefix = "local __molde = {}",
 	__script_suffix = "return table.concat(__molde)",
 	__script_literal = "table.insert(__molde, [%s[%s]%s])",
@@ -93,7 +94,8 @@ end
 
 
 function molde.load(template)
-	local code = molde.compile(template)
+	local code, err = molde.compile(template)
+	if not code then return nil, err end
 	return function(env)
 		local newenv = {
 			table = table,
@@ -106,7 +108,8 @@ end
 
 
 function molde.loadfile(template_file)
-	local file = assert(io.open(template_file, 'r'))
+	local file, err = io.open(template_file, 'r')
+	if not file then return nil, err end
 	local file_contents = file:read('a')
 	file:close()
 	return molde.load(file_contents)

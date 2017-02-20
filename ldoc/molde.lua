@@ -1,6 +1,9 @@
 --- @module molde
 local molde = {}
 
+--- Module version 0.1.0
+molde.VERSION = "0.1.0"
+
 --- Long string bracket level.
 --
 -- It is used as `string.rep('=', molde.string_bracket_level)` to create the
@@ -9,7 +12,7 @@ molde.string_bracket_level = 1
 
 --- Parse errors that can occur in a template
 molde.errors = {
-	PegError = nil,	        -- When PEG can't parse
+	PegError = nil,	             -- When PEG can't parse
 	ClosingValueError = nil,     -- There is no closing `"}}"` to a value
 	ClosingStatementError = nil, -- There is no closing `"%}"` to a statement
 	EmptyValueError = nil,       -- There is no content after value opening `"{{"`
@@ -55,20 +58,50 @@ function molde.parse(template) end
 --
 -- @param template Template string to be compiled
 --
--- @return[1] Generated code string
+-- @treturn[1] string Generated code
 -- @return[2] `nil`
 -- @return[2] Parse error
 function molde.compile(template) end
 
 
---- Compiles the template, returning a closure that executes the substitution
+--- Compiles the template, returning a closure that executes the substitution.
 --
--- @raise When resulting Lua code is not valid
+-- The returned function behaves as described in `__process_template_function`.
+--
+-- @param template Template string
+-- @treturn[1] function Template processor
+-- @return[2] `nil`
+-- @return[2] Parse error
+--
+-- @usage
+--   hello_template = molde.load([[Hello {{ name or "world" }}]])
+--   print(hello_template()) -- "Hello world"
 function molde.load(template) end
 
 
---- Same as `molde.load`, but loads the template from a file
+--- Same as `molde.load`, but loads the template from a file.
 --
--- @raise When file can't be opened, or resulting Lua code is not valid
+-- Every caveat for `molde.load` applies.
+--
+-- @see molde.load
+--
+-- @param template_file Template file path
+-- @treturn[1] function Template processor
+-- @return[2] `nil`
+-- @return[2] File open error
+-- @return[3] `nil`
+-- @return[3] Parse error
+--
+-- @usage
+--   hello_template = molde.loadfile("hello_template_file")
+--   print(hello_template()) -- "Hello world"
 function molde.loadfile(template_file) end
 
+--- This is the prototype of the function returned by `molde.load` and
+-- `molde.loadfile`.
+--
+-- @raise When the generated code is invalid
+--
+-- @param[opt=_ENV] env The used environment
+-- @treturn string Processed template
+function __process_template_function(env) end
