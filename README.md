@@ -12,7 +12,7 @@ Templates
 There are 3 constructs templates recognize:
 
 - __Literals__: Content that will be copied unmodified to the resulting string
-- __Value__: A value processed by Lua and appended to the resulting string,
+- __Value__: A value processed by Lua and substituted by the resulting string,
   stringified by `tostring`
 - __Statement__: A Lua code block to be copied unmodified to the generated code,
   used for variable assignments, repetitions, conditions. It doesn't directly
@@ -20,7 +20,7 @@ There are 3 constructs templates recognize:
 
 __Values__ are delimited by matching `{{` and `}}`, __statements__ by `{%` and
 `%}`, and everything else is considered __literal__. Braces can be escaped
-using a trailing backslash.
+using a leading backslash.
 
 Example:
 
