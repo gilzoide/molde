@@ -11,16 +11,16 @@ Templates
 ---------
 There are 3 constructs templates recognize:
 
-- __Literals__: Content that will be copied unmodified to the resulting string
-- __Value__: A value processed by Lua and appended to the resulting string,
+- __Literals__: Content that will be copied unmodified to the final string
+- __Value__: A value processed by Lua and appended to the final string,
   stringified by `tostring`
 - __Statement__: A Lua code block to be copied unmodified to the generated code,
   used for variable assignments, repetitions, conditions, etc. It doesn't
-  directly generate contents for the resulting string
+  directly generate contents for the final string
 
 __Values__ are delimited by matching `{{` and `}}`, __statements__ by `{%` and
 `%}`, and everything else is considered __literal__. Braces can be escaped
-using a backslash.
+using a leading backslash.
 
 Example:
 

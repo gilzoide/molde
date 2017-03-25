@@ -7,3 +7,6 @@ luacov*
 
 # ldoc output
 doc/
+
+# luarocks
+*.rock
