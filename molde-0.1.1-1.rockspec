@@ -1,5 +1,5 @@
 package = 'molde'
-version = 'scm-1'
+version = '0.1.1-1'
 source = {
 	url = 'git://github.com/gilzoide/molde',
 }
@@ -8,7 +8,7 @@ description = {
 	detailed = [[
 Molde is a template engine for Lua 5.2+. It compiles a template string to a
 function that generates the final string by substituting values by the ones in
-a sandboxed environment.
+the optionally sandboxed environment.
 ]],
 	license = 'LGPLv3',
 	maintainer = 'gilzoide <gilzoide@gmail.com>'

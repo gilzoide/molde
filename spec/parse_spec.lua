@@ -2,11 +2,11 @@ local molde = require 'molde'
 
 describe('Molde parse function', function()
 	it('empty template', function()
-		assert.are.same(molde.parse(''), {})
+		assert.are.same(molde.parse '', {})
 	end)
 
 	it('content tags', function()
-		local one_of_each = molde.parse('literal {{ value }} {% statement %}')
+		local one_of_each = molde.parse 'literal {{ value }} {% statement %}'
 		assert.are.same({
 			{literal = 'literal '},
 			{value = ' value '},

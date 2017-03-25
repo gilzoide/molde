@@ -28,10 +28,10 @@ describe('Molde compile function', function()
 			local assertion = expect_error and assert.has_error or assert.has_no.errors
 			assertion(function() molde.compile('long strings are used in literals') end)
 		end
-		check_braces_level(5, false)
 		check_braces_level(-1, false)
 		check_braces_level(nil, true)
 		check_braces_level('string', true)
 		check_braces_level(false, true)
+		check_braces_level(5, false)
 	end)
 end)

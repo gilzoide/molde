@@ -15,12 +15,12 @@ There are 3 constructs templates recognize:
 - __Value__: A value processed by Lua and appended to the resulting string,
   stringified by `tostring`
 - __Statement__: A Lua code block to be copied unmodified to the generated code,
-  used for variable assignments, repetitions, conditions. It doesn't directly
-  generate contents for the resulting string
+  used for variable assignments, repetitions, conditions, etc. It doesn't
+  directly generate contents for the resulting string
 
 __Values__ are delimited by matching `{{` and `}}`, __statements__ by `{%` and
 `%}`, and everything else is considered __literal__. Braces can be escaped
-using a trailing backslash.
+using a backslash.
 
 Example:
 
@@ -64,19 +64,16 @@ Usage
 ```lua
 local molde = require 'molde'
 
--- molde.load and molde.loadfile return a function
--- that receives the environment to use (default = _ENV)
+-- molde.load and molde.loadfile return a function that receives a table
+-- with the values to substitute, and the optional environment
 hello_template = molde.load([[Hello {{ name or "world" }}]])
 print(hello_template()) -- "Hello world"
--- pass in your variables in a table
 print(hello_template{name = "gilzoide"}) -- "Hello gilzoide"
--- or use _ENV
-name = gilzoide
-print(hello_template()) -- "Hello gilzoide"
+name = "gilzoide"
+print(hello_template({}, _ENV)) -- "Hello gilzoide"
 
 -- load the template from a file (same template)
 hello_template = molde.loadfile("hello_template")
-name = nil
 print(hello_template()) -- "Hello world"
 ```
 

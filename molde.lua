@@ -20,11 +20,11 @@ local lpeg = require 'lpeglabel'
 local re = require 'relabel'
 
 local molde = {
-	VERSION = "0.1.0",
+	VERSION = "0.1.1",
 	__script_prefix = "local __molde = {}",
-	__script_suffix = "return table.concat(__molde)",
-	__script_literal = "table.insert(__molde, [%s[%s]%s])",
-	__script_value = "table.insert(__molde, tostring(%s))",
+	__script_suffix = "return __molde_table.concat(__molde)",
+	__script_literal = "__molde_table.insert(__molde, [%s[%s]%s])",
+	__script_value = "__molde_table.insert(__molde, __molde_tostring(%s))",
 	__script_statement = "%s",
 	string_bracket_level = 1,
 	errors = {},
@@ -73,7 +73,7 @@ end
 
 function molde.compile(template)
 	local contents, err = molde.parse(template)
-	if contents == nil then return nil, err end
+	if not contents then return nil, err end
 
 	local pieces = {}
 	table.insert(pieces, molde.__script_prefix)
@@ -96,11 +96,22 @@ end
 function molde.load(template)
 	local code, err = molde.compile(template)
 	if not code then return nil, err end
-	return function(env)
+	return function(value_table, env)
+		if env == nil then env = _G end
+		local __index = value_table and function(t, k)
+			local v = rawget(t, k)
+			if v == nil then v = value_table[k] end
+			if v == nil then v = env[k] end
+			return v
+		end or function(t, k)
+			local v = rawget(t, k)
+			if v == nil then v = env[k] end
+			return v
+		end
 		local newenv = {
-			table = table,
-			tostring = tostring,
-			__index = env or _ENV
+			__molde_table = table,
+			__molde_tostring = tostring,
+			__index = __index,
 		}
 		return assert(load(code, 'molde generator', 't', setmetatable(newenv, newenv)))()
 	end
