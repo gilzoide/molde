@@ -121,7 +121,7 @@ end
 function molde.loadfile(template_file)
 	local file, err = io.open(template_file, 'r')
 	if not file then return nil, err end
-	local file_contents = file:read('a')
+	local file_contents = file:read('*a')
 	file:close()
 	return molde.load(file_contents)
 end

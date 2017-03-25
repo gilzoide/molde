@@ -16,4 +16,4 @@ install:
   - luarocks make
 
 script:
-  - busted --exclude-tags nyi
+  - busted

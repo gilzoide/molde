@@ -107,7 +107,7 @@ function molde.loadfile(template_file) end
 --
 -- @raise When the generated code is invalid
 --
--- @param[opt={}] values Table with the values to substitute
+-- @param[opt] values Table with the values to substitute
 -- @param[optchain=_G] env Fallback environment
 -- @treturn string Processed template
 function __process_template_function(values, env) end
