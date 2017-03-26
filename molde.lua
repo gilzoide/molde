@@ -20,7 +20,7 @@ local lpeg = require 'lpeglabel'
 local re = require 'relabel'
 
 local molde = {
-	VERSION = "0.1.1",
+	VERSION = "0.1.2",
 	__script_prefix = "local __molde = {}",
 	__script_suffix = "return __molde_table.concat(__molde)",
 	__script_literal = "__molde_table.insert(__molde, [%s[%s]%s])",
@@ -39,25 +39,32 @@ local function addError(label, msg)
 	parseErrors[label] = #parseErrors
 	molde.errors[label] = msg
 end
-addError('ClosingValueError', "closing '}}' expected")
-addError('ClosingStatementError', "closing '%}' expected")
+addError('ExpectedClosingValueError', "closing '}}' expected")
+addError('ExpectedClosingStatementError', "closing '%}' expected")
+addError('UnexpectedClosingValueError', "unexpected closing '}}' found")
+addError('UnexpectedClosingStatementError', "unexpected closing '%}' found")
 addError('EmptyValueError', "empty value after '{{'")
 addError('EmptyStatementError', "empty statement after '{%'")
 re.setlabels(parseErrors)
 
 local grammar = re.compile[[
-Pattern	<- {| ( Value / Statement / Literal )* |} !.
+Pattern <- {| ( Value / Statement / Literal )* |} !.
 
-Value	<- "{{" {| {:value: {~ ValueContent ~} :} |} ("}}" / %{ClosingValueError})
-ValueContent	<- (!"}}" Char)+ / %{EmptyValueError}
+Value <- "{{" {| {:value: {~ ValueContent ~} :} |} ("}}" / %{ExpectedClosingValueError})
+ValueContent <- (!"}}" Char)+ / %{EmptyValueError}
 
-Statement	<- "{%" {| {:statement: {~ StatementContent ~} :} |} ("%}" / %{ClosingStatementError})
-StatementContent	<- (!"%}" Char)+ / %{EmptyStatementError}
+Statement <- "{%" {| {:statement: {~ StatementContent ~} :} |} ("%}" / %{ExpectedClosingStatementError})
+StatementContent <- (!"%}" Char)+ / %{EmptyStatementError}
 
 Literal	<- {| {:literal: {~ LiteralContent ~} :} |}
-LiteralContent	<- ( !('{' [{%]) Char)+
+LiteralContent <- (!('{' [{%]) Char)+
 
-Char	<- '\{' -> '{' / '\}' -> '}' / .
+Char <- '\{' -> '{'
+      / '\}' -> '}'
+      / '\%' -> '%%'
+      / ('}}' %{UnexpectedClosingValueError})
+      / ('%}' %{UnexpectedClosingStatementError})
+      / .
 ]]
 
 
@@ -66,7 +73,9 @@ function molde.parse(template)
 	if res then
 		return res
 	else
-		return nil, parseErrors[label]
+		local whereErr = #template - #suf
+		local lin, col = re.calcline(template, whereErr)
+		return nil, string.format("%s at %d:%d", parseErrors[label], lin, col)
 	end
 end
 

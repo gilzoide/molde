@@ -1,8 +1,8 @@
 --- @module molde
 local molde = {}
 
---- Module version 0.1.1
-molde.VERSION = "0.1.1"
+--- Module version 0.1.2
+molde.VERSION = "0.1.2"
 
 --- Long string bracket level.
 --

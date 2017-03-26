@@ -19,14 +19,17 @@ There are 3 constructs templates recognize:
   directly generate contents for the final string
 
 __Values__ are delimited by matching `{{` and `}}`, __statements__ by `{%` and
-`%}`, and everything else is considered __literal__. Braces can be escaped
-using a leading backslash.
+`%}`, and everything else is considered __literal__. Delimiter characters `{`,
+`}` and `%` can be escaped using a leading backslash. If you want literal `}}`
+or `%}` in your template, they __must__ be escaped, or _molde_ will return
+error.
 
 Example:
 
 ```
-This is a molde template.
-By default, everything is copied unmodified to the resulting string.
+NOTE: This is not a valid molde template for educational purposes.
+
+By default, everything is copied unmodified to the final string.
 
 Values are just Lua expressions:
 - Hello {{ "world" }}
@@ -40,8 +43,10 @@ Values are just Lua expressions:
 - Line 1{{ "\n" }}Line 2
   "Line 1
   Line 2"
-- Escaping \{{ Hi! }}
-  "Escaping {{ Hi! }}" (no opening '{{', so it is considered literal)
+- Escaping \{{ Hi! \}} (Note that you MUST escape the closing '}}')
+  "Escaping {{ Hi! }}"
+- Escaping is characterwise, so \{{ is as valid as {\{
+  "Escaping is characterwise, so {{ is as valid as {{"
 - table.insert is used in values {{ so they must be a valid expression! }}
   Error: ')' expected near 'they'
 
@@ -50,10 +55,12 @@ Statements are Lua statements:
   "1 2 3 4 5 "
 - {% -- this is just a comment, y'know %}
   ""
-- {{ unbound_variable }}{% unbound_variable = "Hi!" %}{{ unbound_variable }}
-  "nilHi!"
+- {{ unbound_variable }}{% unbound_variable = "Hi!" %} {{ unbound_variable }}
+  "nil Hi!"
 - {% if false then %}This will never be printed{% else %}Conditionals!{% end %}
   "Conditionals!"
+- \{% Escaping works \%} {\% here as well %\} (You MUST escape closing '%}' too)
+  "{% Escaping works %} {% here as well %}"
 - {% if without_then %}Statements must form valid Lua code!{% end %}
   Error: 'then' expected near 'table'
 ```
@@ -65,7 +72,7 @@ Usage
 local molde = require 'molde'
 
 -- molde.load and molde.loadfile return a function that receives a table
--- with the values to substitute, and the optional environment
+-- with the values to substitute, and the optional environment (default: _G)
 hello_template = molde.load([[Hello {{ name or "world" }}]])
 print(hello_template()) -- "Hello world"
 print(hello_template{name = "gilzoide"}) -- "Hello gilzoide"
@@ -74,6 +81,7 @@ print(hello_template({}, _ENV)) -- "Hello gilzoide"
 
 -- load the template from a file (same template)
 hello_template = molde.loadfile("hello_template")
+name = nil
 print(hello_template()) -- "Hello world"
 ```
 
@@ -88,7 +96,10 @@ Run automated tests using [busted](http://olivinelabs.com/busted/):
 
 Documentation
 -------------
-The API is documented using [LDoc](https://github.com/stevedonovan/LDoc).
+The API is documented using [LDoc](https://github.com/stevedonovan/LDoc) and
+is available at [github pages](http://gilzoide.github.io/molde).
+
 To generate:
 
 	$ ldoc ldoc/
+
