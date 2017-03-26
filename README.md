@@ -65,8 +65,17 @@ Statements are Lua statements:
   Error: 'then' expected near 'table'
 ```
 
+Installing
+----------
+Using [LuaRocks](https://luarocks.org/):
 
-Usage
+	# luarocks install molde
+
+Or you may copy the only source file `molde.lua` to your Lua path
+
+
+
+Using
 -----
 ```lua
 local molde = require 'molde'
