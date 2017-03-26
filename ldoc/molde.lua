@@ -12,9 +12,11 @@ molde.string_bracket_level = 1
 
 --- Parse errors that can occur in a template
 molde.errors = {
-	PegError = nil,	             -- When PEG can't parse
-	ClosingValueError = nil,     -- There is no closing `"}}"` to a value
-	ClosingStatementError = nil, -- There is no closing `"%}"` to a statement
+	PegError = nil,	             -- When PEG couldn't parse
+	ExpectedClosingValueError = nil,     -- There is no closing `"}}"` to a value
+	ExpectedClosingStatementError = nil, -- There is no closing `"%}"` to a statement
+	UnexpectedClosingValueError = nil,     -- There is a closing `"}}"` without the corresponding `"{{"`
+	UnexpectedClosingStatementError = nil, -- There is a closing `"%}"` without the corresponding `"{%"`
 	EmptyValueError = nil,       -- There is no content after value opening `"{{"`
 	EmptyStatementError = nil,   -- There is no content after statement opening `"{%"`
 }
