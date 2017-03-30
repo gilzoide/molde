@@ -20,7 +20,7 @@ local lpeg = require 'lpeglabel'
 local re = require 'relabel'
 
 local molde = {
-	VERSION = "0.1.2",
+	VERSION = "0.1.3",
 	__script_prefix = "local __molde = {}",
 	__script_suffix = "return __molde_table.concat(__molde)",
 	__script_literal = "__molde_table.insert(__molde, [%s[%s]%s])",
@@ -122,7 +122,8 @@ function molde.load(template)
 			__molde_tostring = tostring,
 			__index = __index,
 		}
-		return assert(load(code, 'molde generator', 't', setmetatable(newenv, newenv)))()
+		setmetatable(newenv, newenv)
+		return assert(load(code, 'molde generator', 't', newenv))(), newenv
 	end
 end
 

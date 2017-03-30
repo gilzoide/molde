@@ -1,8 +1,8 @@
 --- @module molde
 local molde = {}
 
---- Module version 0.1.2
-molde.VERSION = "0.1.2"
+--- Module version 0.1.3
+molde.VERSION = "0.1.3"
 
 --- Long string bracket level.
 --
@@ -104,12 +104,16 @@ function molde.loadfile(template_file) end
 --
 -- The environment is sandboxed, and assigning variables directly to it won't
 -- affect the original tables. Variable lookup order: local environment,
--- `values`, `env`. The `env` table serves as a fallback environment, and is
--- useful when you want to sandbox builtin Lua functions.
+-- `values`, `env`. The `env` table serves as a fallback
+-- environment, and is useful when you want to sandbox builtin Lua functions.
+--
+-- Any non-local variables assigned in the template are stored in the sandboxed
+-- environment, which is the function's `_ENV`.
 --
 -- @raise When the generated code is invalid
 --
 -- @param[opt] values Table with the values to substitute
 -- @param[optchain=_G] env Fallback environment
 -- @treturn string Processed template
+-- @treturn table The sandboxed environment used
 function __process_template_function(values, env) end

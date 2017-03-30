@@ -16,7 +16,7 @@ describe('Molde load function', function()
 		local hello_template = molde.load 'hello {{ name or "world" }}'
 		assert.equals("hello world", hello_template())
 		name = 'test'
-		assert.equals("hello test", hello_template({}, _ENV))
+		assert.equals("hello test", hello_template(nil, _ENV))
 		assert.equals("hello world", hello_template({name = false}, _ENV))
 	end)
 
@@ -47,5 +47,20 @@ describe('Molde load function', function()
 		invalid_code = molde.load '{% if without_then %}{% end %}'
 		assert.is_function(invalid_code)
 		assert.has_error(invalid_code)
+	end)
+
+	it('assignment on template sandboxed env', function()
+		local assign_template = molde.load [[Hello {%
+			-- variables are registered in _ENV, the sandboxed environment
+			hello = "world"
+			-- local variables are not
+			local world = "is not enough"
+		%}{{ hello }}]]
+		local values = {hello = "not used"}
+		local result, env = assign_template(values)
+		assert.equals('Hello world', result)
+		assert.equals('world', env.hello)
+		assert.is_nil(env.world)
+		assert.equals("not used", values.hello)
 	end)
 end)
