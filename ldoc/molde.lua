@@ -1,8 +1,8 @@
 --- @module molde
 local molde = {}
 
---- Module version 0.1.3
-molde.VERSION = "0.1.3"
+--- Module version 0.1.4
+molde.VERSION = "0.1.4"
 
 --- Long string bracket level.
 --
@@ -71,6 +71,7 @@ function molde.compile(template) end
 -- The returned function behaves as described in `__process_template_function`.
 --
 -- @param template Template string
+--
 -- @treturn[1] function Template processor
 -- @return[2] `nil`
 -- @return[2] Parse error
@@ -88,6 +89,7 @@ function molde.load(template) end
 -- @see molde.load
 --
 -- @param template_file Template file path
+--
 -- @treturn[1] function Template processor
 -- @return[2] `nil`
 -- @return[2] File open error
@@ -114,6 +116,7 @@ function molde.loadfile(template_file) end
 --
 -- @param[opt] values Table with the values to substitute
 -- @param[optchain=_G] env Fallback environment
+--
 -- @treturn string Processed template
 -- @treturn table The sandboxed environment used
 function __process_template_function(values, env) end

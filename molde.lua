@@ -20,7 +20,7 @@ local lpeg = require 'lpeglabel'
 local re = require 'relabel'
 
 local molde = {
-	VERSION = "0.1.3",
+	VERSION = "0.1.4",
 	__script_prefix = "local __molde = {}",
 	__script_suffix = "return __molde_table.concat(__molde)",
 	__script_literal = "__molde_table.insert(__molde, [%s[%s]%s])",
@@ -88,7 +88,7 @@ function molde.compile(template)
 	table.insert(pieces, molde.__script_prefix)
 	for _, c in ipairs(contents) do
 		local key, v = next(c)
-		if key == 'literal' then
+		if key == 'literal' and v ~= '\n' and v ~= '\r\n' then
 			local eq = string.rep('=', molde.string_bracket_level)
 			table.insert(pieces, molde.__script_literal:format(eq, v, eq))
 		elseif key == 'value' then
