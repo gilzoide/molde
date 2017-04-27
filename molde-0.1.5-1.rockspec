@@ -1,5 +1,5 @@
 package = 'molde'
-version = '0.1.4-1'
+version = '0.1.5-1'
 source = {
 	url = 'git://github.com/gilzoide/molde',
 }

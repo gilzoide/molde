@@ -20,7 +20,7 @@ local lpeg = require 'lpeglabel'
 local re = require 'relabel'
 
 local molde = {
-	VERSION = "0.1.4",
+	VERSION = "0.1.5",
 	__script_prefix = "local __molde = {}",
 	__script_suffix = "return __molde_table.concat(__molde)",
 	__script_literal = "__molde_table.insert(__molde, [%s[%s]%s])",
@@ -102,7 +102,7 @@ function molde.compile(template)
 end
 
 
-function molde.load(template)
+function molde.load(template, string_name)
 	local code, err = molde.compile(template)
 	if not code then return nil, err end
 	return function(value_table, env)
@@ -123,7 +123,7 @@ function molde.load(template)
 			__index = __index,
 		}
 		setmetatable(newenv, newenv)
-		return assert(load(code, 'molde generator', 't', newenv))(), newenv
+		return assert(load(code, string_name or 'molde generator', 't', newenv))(), newenv
 	end
 end
 
@@ -133,7 +133,7 @@ function molde.loadfile(template_file)
 	if not file then return nil, err end
 	local file_contents = file:read('*a')
 	file:close()
-	return molde.load(file_contents)
+	return molde.load(file_contents, template_file)
 end
 
 return molde

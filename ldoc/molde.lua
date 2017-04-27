@@ -1,8 +1,8 @@
 --- @module molde
 local molde = {}
 
---- Module version 0.1.4
-molde.VERSION = "0.1.4"
+--- Module version 0.1.5
+molde.VERSION = "0.1.5"
 
 --- Long string bracket level.
 --
@@ -71,6 +71,7 @@ function molde.compile(template) end
 -- The returned function behaves as described in `__process_template_function`.
 --
 -- @param template Template string
+-- @param[opt='molde generator'] chunkname Name of the chunk for error messages
 --
 -- @treturn[1] function Template processor
 -- @return[2] `nil`
@@ -79,10 +80,12 @@ function molde.compile(template) end
 -- @usage
 --   hello_template = molde.load([[Hello {{ name or "world" }}]])
 --   print(hello_template()) -- "Hello world"
-function molde.load(template) end
+function molde.load(template, chunkname) end
 
 
 --- Same as `molde.load`, but loads the template from a file.
+--
+-- Uses `template_file` as chunkname.
 --
 -- Every caveat for `molde.load` applies.
 --
