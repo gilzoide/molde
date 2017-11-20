@@ -102,6 +102,16 @@ function molde.compile(template)
 end
 
 
+--- Load a function and set it's environment.
+--
+-- This is set for compatibility with both Lua 5.1 and 5.2+
+local load_with_env = _VERSION == "Lua 5.1" and function(code, chunkname, env)
+	return setfenv(loadstring(code, chunkname), env)
+end or function(code, chunkname, env)
+	return load(code, chunkname, 't', env)
+end
+
+
 function molde.load(template, string_name)
 	local code, err = molde.compile(template)
 	if not code then return nil, err end
@@ -123,7 +133,7 @@ function molde.load(template, string_name)
 			__index = __index,
 		}
 		setmetatable(newenv, newenv)
-		return assert(load(code, string_name or 'molde generator', 't', newenv))(), newenv
+		return assert(load_with_env(code, string_name or 'molde generator', newenv))(), newenv
 	end
 end
 

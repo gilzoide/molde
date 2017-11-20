@@ -1,5 +1,7 @@
 local molde = require 'molde'
 
+_ENV = _ENV or getfenv()
+
 describe('Molde loadfile function', function()
 	it('existing file', function()
 		local template = molde.loadfile 'spec/hello_template.molde'

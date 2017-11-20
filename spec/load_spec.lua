@@ -1,5 +1,7 @@
 local molde = require 'molde'
 
+_ENV = _ENV or getfenv()
+
 describe('Molde load function', function()
 	it('empty', function()
 		local empty_template = molde.load ''

@@ -4,9 +4,9 @@ source = {
 	url = 'git://github.com/gilzoide/molde',
 }
 description = {
-	summary = 'A template engine for Lua 5.2+',
+	summary = 'A template engine for Lua 5.1+',
 	detailed = [[
-Molde is a template engine for Lua 5.2+. It compiles a template string to a
+Molde is a template engine for Lua 5.1+. It compiles a template string to a
 function that generates the final string by substituting values by the ones in
 a sandboxed environment.
 ]],
@@ -14,7 +14,7 @@ a sandboxed environment.
 	maintainer = 'gilzoide <gilzoide@gmail.com>'
 }
 dependencies = {
-	'lua >= 5.2',
+	'lua >= 5.1',
 	'lpeglabel',
 }
 build = {

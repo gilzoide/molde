@@ -126,3 +126,8 @@ To generate:
 
 	$ ldoc ldoc/
 
+
+Change log
+----------
+- 0.1.6 - Support for Lua 5.1
+
