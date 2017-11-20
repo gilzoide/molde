@@ -2,7 +2,7 @@ Molde
 =====
 [![Build Status](https://travis-ci.org/gilzoide/molde.svg?branch=master)](https://travis-ci.org/gilzoide/molde)
 
-Molde is a template engine for Lua 5.2+. It compiles a template string to a
+Molde is a template engine for Lua 5.1+. It compiles a template string to a
 function that generates the final string by substituting values by the ones in
 a sandboxed environment.
 
@@ -40,7 +40,7 @@ Values are just Lua expressions:
 - {{ nil or "default" }}
   "default"
 - You are using {{ _VERSION }}
-  "You are using Lua 5.3" (You may use Lua 5.2 as well)
+  "You are using Lua 5.3" (You may use Lua 5.1 and 5.2 as well)
 - Line 1{{ "\n" }}Line 2
   "Line 1
   Line 2"
@@ -100,7 +100,7 @@ hello_template = molde.load([[Hello {{ name or "world" }}]])
 print(hello_template()) -- "Hello world"
 print(hello_template{name = "gilzoide"}) -- "Hello gilzoide"
 name = "gilzoide"
-print(hello_template({}, _ENV)) -- "Hello gilzoide"
+print(hello_template({}, _ENV or getfenv())) -- "Hello gilzoide"
 
 -- load the template from a file (same template)
 hello_template = molde.loadfile("hello_template")

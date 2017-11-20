@@ -113,7 +113,7 @@ function molde.loadfile(template_file) end
 -- environment, and is useful when you want to sandbox builtin Lua functions.
 --
 -- Any non-local variables assigned in the template are stored in the sandboxed
--- environment, which is the function's `_ENV`.
+-- environment, which is the function's environment (`_ENV or getfenv()`).
 --
 -- @raise When the generated code is invalid
 --
