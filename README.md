@@ -124,10 +124,10 @@ is available at [github pages](http://gilzoide.github.io/molde).
 
 To generate:
 
-	$ ldoc ldoc/
+	$ ldoc ldoc/ -d docs
 
 
 Change log
 ----------
-- 0.1.6 - Support for Lua 5.1
++ 0.1.6 - Support for Lua 5.1
 

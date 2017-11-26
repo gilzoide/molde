@@ -1,0 +1,435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>molde</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>molde</strong></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="topics/README.md.html">README</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>molde</code></h1>
+<p>
+
+</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#parse">parse (template)</a></td>
+	<td class="summary">Parse a template, returning a table with the matched contents.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#compile">compile (template)</a></td>
+	<td class="summary">Compiles a table with contents to Lua code that generates the (hopefully)
+ desired result.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#load">load (template[, chunkname='molde generator'])</a></td>
+	<td class="summary">Compiles the template, returning a closure that executes the substitution.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#loadfile">loadfile (template_file)</a></td>
+	<td class="summary">Same as <a href="index.html#load">molde.load</a>, but loads the template from a file.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#__process_template_function">__process_template_function ([values[, env=_G]])</a></td>
+	<td class="summary">This is the prototype of the function returned by <a href="index.html#load">molde.load</a> and
+ <a href="index.html#loadfile">molde.loadfile</a>.</td>
+	</tr>
+</table>
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#errors">errors</a></td>
+	<td class="summary">Parse errors that can occur in a template</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#VERSION">VERSION</a></td>
+	<td class="summary">Module version 0.1.5</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#string_bracket_level">string_bracket_level</a></td>
+	<td class="summary">Long string bracket level.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Functions"></a>Functions</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "parse"></a>
+    <strong>parse (template)</strong>
+    </dt>
+    <dd>
+    Parse a template, returning a table with the matched contents. </p>
+
+<p> The parser tags the contents as:</p>
+
+<ul>
+    <li>Literal: text that should be just copied to result</li>
+    <li>Value: a value to be substituted using Lua, usually a variable; it will be
+    stringified using <a href="https://www.lua.org/manual/5.3/manual.html#pdf-tostring">tostring</a></li>
+    <li>Statement: one or more Lua statements that will be copied directly into the
+    compiled function</li>
+</ul>
+
+<p> Results are in the format <code>{[&apos;literal&apos; | &apos;value&apos; | &apos;statement&apos;] = &lt;captured value&gt;}</code>
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">template</span>
+         Template string to be parsed
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        Table with results
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+        <code>nil</code></li>
+        <li>
+        Parse error</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">local</span> results = molde.parse(<span class="string">[[literal {{ value }} {% statement %}]]</span>)
+<span class="comment">--[[
+-- results: {
+--     {literal = "literal "},
+--     {value = " value "},
+--     {literal = " "},
+--     {statement = " statement "}
+-- }
+--]]</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "compile"></a>
+    <strong>compile (template)</strong>
+    </dt>
+    <dd>
+    Compiles a table with contents to Lua code that generates the (hopefully)
+ desired result. </p>
+
+<p> The code generated for literals use Lua's long strings, with a default level
+ of 1. This level is taken from <a href="index.html#string_bracket_level">molde.string_bracket_level</a>, and can be changed
+ if your literal may contain the string <code>&quot;]=]&quot;</code>, for example.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">template</span>
+         Template string to be compiled
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        Generated code
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+        <code>nil</code></li>
+        <li>
+        Parse error</li>
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "load"></a>
+    <strong>load (template[, chunkname='molde generator'])</strong>
+    </dt>
+    <dd>
+    Compiles the template, returning a closure that executes the substitution. </p>
+
+<p> The returned function behaves as described in <a href="index.html#__process_template_function">__process_template_function</a>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">template</span>
+         Template string
+        </li>
+        <li><span class="parameter">chunkname</span>
+         Name of the chunk for error messages
+         (<em>default</em> 'molde generator')
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        Template processor
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+        <code>nil</code></li>
+        <li>
+        Parse error</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">hello_template = molde.<span class="global">load</span>(<span class="string">[[Hello {{ name or "world" }}]]</span>)
+<span class="global">print</span>(hello_template()) <span class="comment">-- "Hello world"</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "loadfile"></a>
+    <strong>loadfile (template_file)</strong>
+    </dt>
+    <dd>
+    Same as <a href="index.html#load">molde.load</a>, but loads the template from a file. </p>
+
+<p> Uses <code>template_file</code> as chunkname.</p>
+
+<p> Every caveat for <a href="index.html#load">molde.load</a> applies.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">template_file</span>
+         Template file path
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        Template processor
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+        <code>nil</code></li>
+        <li>
+        File open error</li>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+        <code>nil</code></li>
+        <li>
+        Parse error</li>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#load">molde.load</a>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">hello_template = molde.<span class="global">loadfile</span>(<span class="string">"hello_template_file"</span>)
+<span class="global">print</span>(hello_template()) <span class="comment">-- "Hello world"</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "__process_template_function"></a>
+    <strong>__process_template_function ([values[, env=_G]])</strong>
+    </dt>
+    <dd>
+    This is the prototype of the function returned by <a href="index.html#load">molde.load</a> and
+ <a href="index.html#loadfile">molde.loadfile</a>. </p>
+
+<p> The environment is sandboxed, and assigning variables directly to it won't
+ affect the original tables. Variable lookup order: local environment,
+ <code>values</code>, <code>env</code>. The <code>env</code> table serves as a fallback
+ environment, and is useful when you want to sandbox builtin Lua functions.</p>
+
+<p> Any non-local variables assigned in the template are stored in the sandboxed
+ environment, which is the function's environment (<code>_ENV or getfenv()</code>).
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">values</span>
+         Table with the values to substitute
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">env</span>
+         Fallback environment
+         (<em>default</em> _G)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.4">string</a></span>
+        Processed template</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.3/manual.html#6.6">table</a></span>
+        The sandboxed environment used</li>
+    </ol>
+
+    <h3>Raises:</h3>
+    When the generated code is invalid
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "errors"></a>
+    <strong>errors</strong>
+    </dt>
+    <dd>
+    Parse errors that can occur in a template
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">PegError</span>
+        When PEG couldn't parse
+        </li>
+        <li><span class="parameter">ExpectedClosingValueError</span>
+        There is no closing <code>&quot;}}&quot;</code> to a value
+        </li>
+        <li><span class="parameter">ExpectedClosingStatementError</span>
+        There is no closing <code>&quot;%}&quot;</code> to a statement
+        </li>
+        <li><span class="parameter">UnexpectedClosingValueError</span>
+        There is a closing <code>&quot;}}&quot;</code> without the corresponding <code>&quot;{{&quot;</code>
+        </li>
+        <li><span class="parameter">UnexpectedClosingStatementError</span>
+        There is a closing <code>&quot;%}&quot;</code> without the corresponding <code>&quot;{%&quot;</code>
+        </li>
+        <li><span class="parameter">EmptyValueError</span>
+        There is no content after value opening <code>&quot;{{&quot;</code>
+        </li>
+        <li><span class="parameter">EmptyStatementError</span>
+        There is no content after statement opening <code>&quot;{%&quot;</code>
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "VERSION"></a>
+    <strong>VERSION</strong>
+    </dt>
+    <dd>
+    Module version 0.1.5
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "string_bracket_level"></a>
+    <strong>string_bracket_level</strong>
+    </dt>
+    <dd>
+    Long string bracket level. </p>
+
+<p> It is used as <code>string.rep(&apos;=&apos;, molde.string_bracket_level)</code> to create the
+ necessary string delimiters for literals.
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2017-11-26 17:19:03 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
