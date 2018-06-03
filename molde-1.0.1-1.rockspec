@@ -1,8 +1,8 @@
 package = 'molde'
-version = '1.0.0-1'
+version = '1.0.1-1'
 source = {
 	url = 'git://github.com/gilzoide/molde',
-	tag = 'v1.0.0',
+	tag = 'v1.0.1',
 }
 description = {
 	summary = 'A template engine for Lua 5.1+',

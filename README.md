@@ -130,6 +130,7 @@ To generate:
 Change log
 ----------
 
++ 1.0.1 - Fix error handling for matching on LpegLabel v1.5
 + 1.0.0 - Updated to use LpegLabel version 1.5+
 + 0.1.6 - Support for Lua 5.1
 
