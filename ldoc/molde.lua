@@ -12,7 +12,7 @@ molde.string_bracket_level = 1
 
 --- Parse errors that can occur in a template
 molde.errors = {
-	PegError = nil,	             -- When PEG couldn't parse
+	[0] = nil,	             -- When PEG couldn't parse
 	ExpectedClosingValueError = nil,     -- There is no closing `"}}"` to a value
 	ExpectedClosingStatementError = nil, -- There is no closing `"%}"` to a statement
 	UnexpectedClosingValueError = nil,     -- There is a closing `"}}"` without the corresponding `"{{"`
@@ -79,7 +79,8 @@ function molde.compile(template) end
 --
 -- @usage
 --   hello_template = molde.load([[Hello {{ name or "world" }}]])
---   print(hello_template()) -- "Hello world"
+--   hello = hello_template()
+--   print(hello) -- "Hello world"
 function molde.load(template, chunkname) end
 
 
@@ -100,8 +101,10 @@ function molde.load(template, chunkname) end
 -- @return[3] Parse error
 --
 -- @usage
+--   -- hello_template_file contents == "literal {{ value }} {% statement %}"
 --   hello_template = molde.loadfile("hello_template_file")
---   print(hello_template()) -- "Hello world"
+--   hello = hello_template()
+--   print(hello) -- "Hello world"
 function molde.loadfile(template_file) end
 
 --- This is the prototype of the function returned by `molde.load` and
@@ -122,6 +125,22 @@ function molde.loadfile(template_file) end
 --
 -- @treturn string Processed template
 -- @treturn table The sandboxed environment used
+--
+-- @usage
+--   hello_template = molde.load([[
+--   {% name = (name or "world") .. "!!!" %}
+--   Hello {{ name }}
+--   ]])
+--   message, template_env = hello_template()
+--   print(message, template_env.name) -- "Hello world!!!"  "world!!!"
+--   values = { name = "gilzoide" }
+--   message, template_env = hello_template(values)
+--   print(message, values.name, template_env.name) -- "Hello gilzoide!!!"  "gilzoide"  "gilzoide!!!"
+--   env = { name = "y'all" }
+--   message, template_env = hello_template(values, env)
+--   print(message, template_env.name) -- "Hello gilzoide!!!"  "gilzoide!!!"
+--   message, template_env = hello_template(nil, env)
+--   print(message, env.name, template_env.name) -- "Hello y'all!!!"  "y'all"  "y'all!!!"
 function __process_template_function(values, env) end
 
 return molde
