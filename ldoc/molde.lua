@@ -1,8 +1,8 @@
 --- @module molde
 local molde = {}
 
---- Module version 0.1.5
-molde.VERSION = "0.1.5"
+--- Module version 1.0.0
+molde.VERSION = "1.0.0"
 
 --- Long string bracket level.
 --
@@ -123,3 +123,5 @@ function molde.loadfile(template_file) end
 -- @treturn string Processed template
 -- @treturn table The sandboxed environment used
 function __process_template_function(values, env) end
+
+return molde

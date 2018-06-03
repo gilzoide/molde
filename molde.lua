@@ -1,5 +1,5 @@
 --[[
--- Copyright 2017 Gil Barbosa Reis <gilzoide@gmail.com>
+-- Copyright 2017, 2018 Gil Barbosa Reis <gilzoide@gmail.com>
 -- This file is part of Molde.
 --
 -- Molde is free software: you can redistribute it and/or modify
@@ -20,32 +20,23 @@ local lpeg = require 'lpeglabel'
 local re = require 'relabel'
 
 local molde = {
-	VERSION = "0.1.5",
+	VERSION = "1.0.0",
 	__script_prefix = "local __molde = {}",
 	__script_suffix = "return __molde_table.concat(__molde)",
 	__script_literal = "__molde_table.insert(__molde, [%s[%s]%s])",
 	__script_value = "__molde_table.insert(__molde, __molde_tostring(%s))",
 	__script_statement = "%s",
 	string_bracket_level = 1,
-	errors = {},
+	errors = {
+		[0] = "PEG couldn't parse",
+		ExpectedClosingValueError = "closing '}}' expected",
+		ExpectedClosingStatementError = "closing '%}' expected",
+		UnexpectedClosingValueError = "unexpected closing '}}' found",
+		UnexpectedClosingStatementError = "unexpected closing '%}' found",
+		EmptyValueError = "empty value after '{{'",
+		EmptyStatementError = "empty statement after '{%'",
+	},
 }
-
--- Parser errors
-local parseErrors = {}
-parseErrors[0] = "PEG couldn't parse"
-parseErrors.PegError = 0
-local function addError(label, msg)
-	table.insert(parseErrors, msg)
-	parseErrors[label] = #parseErrors
-	molde.errors[label] = msg
-end
-addError('ExpectedClosingValueError', "closing '}}' expected")
-addError('ExpectedClosingStatementError', "closing '%}' expected")
-addError('UnexpectedClosingValueError', "unexpected closing '}}' found")
-addError('UnexpectedClosingStatementError', "unexpected closing '%}' found")
-addError('EmptyValueError', "empty value after '{{'")
-addError('EmptyStatementError', "empty statement after '{%'")
-re.setlabels(parseErrors)
 
 local grammar = re.compile[[
 Pattern <- {| ( Value / Statement / Literal )* |} !.
@@ -73,9 +64,9 @@ function molde.parse(template)
 	if res then
 		return res
 	else
-		local whereErr = #template - #suf
+		local whereErr = #template - suf
 		local lin, col = re.calcline(template, whereErr)
-		return nil, string.format("%s at %d:%d", parseErrors[label], lin, col)
+		return nil, string.format("%s at %d:%d", molde.errors[label], lin, col)
 	end
 end
 
