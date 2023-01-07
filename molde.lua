@@ -58,7 +58,7 @@ local molde = {
 local Token = molde.Token
 
 local function tokenize_coroutine(text)
-    local send_token = coroutine.yield
+	local send_token = coroutine.yield
 	local function send_literal(index)
 		if index >= 1 then
 			send_token(Token.LITERAL, text:sub(1, index))
@@ -233,7 +233,7 @@ end
 --       elseif parse_state == molde.ParseState.STATEMENT then
 --           print('{% Statement found %}', value)
 --       else  -- parse_state == molde.ParseState.ERROR
---		     error('Parse error: ' .. value)
+--           error('Parse error: ' .. value)
 --       end
 --   end
 function molde.parse(template)
