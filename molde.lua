@@ -58,10 +58,10 @@ local molde = {
 local Token = molde.Token
 
 local function tokenize_coroutine(text)
-	local send_token = coroutine.yield
-	local function send_literal(index)
+	local yield = coroutine.yield
+	local function yield_literal(index)
 		if index >= 1 then
-			send_token(Token.LITERAL, text:sub(1, index))
+			yield(Token.LITERAL, text:sub(1, index))
 		end
 	end
 
@@ -77,30 +77,30 @@ local function tokenize_coroutine(text)
 
 		-- New line
 		if char == '\n' then
-			send_literal(start_index - 1)
-			send_token(Token.NEWLINE, '\n')
+			yield_literal(start_index - 1)
+			yield(Token.NEWLINE, '\n')
 		-- Escaped character
 		elseif start_index > 1 and text:sub(start_index - 1, start_index - 1) == '\\' then
-			send_token(Token.LITERAL, text:sub(1, start_index - 2) .. char)
+			yield(Token.LITERAL, text:sub(1, start_index - 2) .. char)
 		-- Start value
 		elseif char == '{' and next_char == '{' then
-			send_literal(start_index - 1)
-			send_token(Token.VALUE_BEGIN, '{{')
+			yield_literal(start_index - 1)
+			yield(Token.VALUE_BEGIN, '{{')
 			advance = end_index + 1
 		-- Start statement
 		elseif char == '{' and next_char == '%' then
-			send_literal(start_index - 1)
-			send_token(Token.STATEMENT_BEGIN, '{%')
+			yield_literal(start_index - 1)
+			yield(Token.STATEMENT_BEGIN, '{%')
 			advance = end_index + 1
 		-- End value
 		elseif char == '}' and next_char == '}' then
-			send_literal(start_index - 1)
-			send_token(Token.VALUE_END, '}}')
+			yield_literal(start_index - 1)
+			yield(Token.VALUE_END, '}}')
 			advance = end_index + 1
 		-- End statement
 		elseif char == '%' and next_char == '}' then
-			send_literal(start_index - 1)
-			send_token(Token.STATEMENT_END, '%}')
+			yield_literal(start_index - 1)
+			yield(Token.STATEMENT_END, '%}')
 			advance = end_index + 1
 		-- First character is special, but the next one is not. Keep looking
 		else
@@ -113,7 +113,7 @@ local function tokenize_coroutine(text)
 	end
 
 	if #text > 0 then
-		send_token(Token.LITERAL, tostring(text))
+		yield(Token.LITERAL, tostring(text))
 	end
 end
 
@@ -146,16 +146,16 @@ local ParseError = molde.ParseError
 local function parse_coroutine(text)
 	local line, column = 1, 1
 
-	local send_event = coroutine.yield
-	local function send_error(msg)
-		send_event(ParseState.ERROR, string.format('Error at line %u (col %u): %s', line, column, msg))
+	local yield = coroutine.yield
+	local function yield_error(msg)
+		yield(ParseState.ERROR, string.format('Error at line %u (col %u): %s', line, column, msg))
 	end
 
 	local state = ParseState.LITERAL
 	local current_text = ''
-	local function send_current_text()
+	local function yield_current_text()
 		if #current_text > 0 then
-			send_event(state, current_text)
+			yield(state, current_text)
 			current_text = ''
 		end
 	end
@@ -169,34 +169,34 @@ local function parse_coroutine(text)
 			column = 0
 		elseif token == Token.VALUE_BEGIN then
 			if state ~= ParseState.LITERAL then
-				return send_error(ParseError.UNEXPECTED_OPENING_VALUE)
+				return yield_error(ParseError.UNEXPECTED_OPENING_VALUE)
 			else
-				send_current_text()
+				yield_current_text()
 				state = ParseState.VALUE
 			end
 		elseif token == Token.VALUE_END then
 			if state ~= ParseState.VALUE then
-				return send_error(ParseError.UNEXPECTED_CLOSING_VALUE)
+				return yield_error(ParseError.UNEXPECTED_CLOSING_VALUE)
 			elseif not current_text:find('%S') then
-				return send_error(ParseError.EMPTY_VALUE)
+				return yield_error(ParseError.EMPTY_VALUE)
 			else
-				send_current_text()
+				yield_current_text()
 				state = ParseState.LITERAL
 			end
 		elseif token == Token.STATEMENT_BEGIN then
 			if state ~= ParseState.LITERAL then
-				return send_error(ParseError.UNEXPECTED_OPENING_STATEMENT)
+				return yield_error(ParseError.UNEXPECTED_OPENING_STATEMENT)
 			else
-				send_current_text()
+				yield_current_text()
 				state = ParseState.STATEMENT
 			end
 		elseif token == Token.STATEMENT_END then
 			if state ~= ParseState.STATEMENT then
-				return send_error(ParseError.UNEXPECTED_CLOSING_STATEMENT)
+				return yield_error(ParseError.UNEXPECTED_CLOSING_STATEMENT)
 			elseif not current_text:find('%S') then
-				return send_error(ParseError.EMPTY_STATEMENT)
+				return yield_error(ParseError.EMPTY_STATEMENT)
 			else
-				send_current_text()
+				yield_current_text()
 				state = ParseState.LITERAL
 			end
 		else
@@ -208,11 +208,11 @@ local function parse_coroutine(text)
 	end
 	
 	if state == ParseState.VALUE then
-		return send_error(ParseError.EXPECTED_CLOSING_VALUE)
+		return yield_error(ParseError.EXPECTED_CLOSING_VALUE)
 	elseif state == ParseState.STATEMENT then
-		return send_error(ParseError.EXPECTED_CLOSING_STATEMENT)
+		return yield_error(ParseError.EXPECTED_CLOSING_STATEMENT)
 	else
-		send_current_text()
+		yield_current_text()
 	end
 end
 
