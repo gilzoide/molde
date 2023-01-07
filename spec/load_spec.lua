@@ -17,7 +17,8 @@ describe('Molde load function', function()
 	it('values', function()
 		local hello_template = molde.load 'hello {{ name or "world" }}'
 		assert.equals("hello world", hello_template())
-		name = 'test'
+		assert.equals("hello not world", hello_template{name = 'not world'})
+		_ENV.name = 'test'
 		assert.equals("hello test", hello_template(nil, _ENV))
 		assert.equals("hello world", hello_template({name = false}, _ENV))
 	end)
@@ -26,29 +27,27 @@ describe('Molde load function', function()
 		local function check_load_error(template, expected_err)
 			local res, err = molde.load(template)
 			assert.is_nil(res)
-			local expected = molde.errors[expected_err]
-			assert.equal(expected, err:sub(1, #expected))
+			local expected = molde.ParseError[expected_err]
+			assert.is_not_nil(err:find(expected, 1, true))
 		end
-		check_load_error('{% this statement never closes } }', 'ExpectedClosingStatementError')
-		check_load_error('{{ nor does this value } }', 'ExpectedClosingValueError')
-		check_load_error('unexpected closing delimiter }}', 'UnexpectedClosingValueError')
-		check_load_error('another unexpected closing delimiter %}', 'UnexpectedClosingStatementError')
-		check_load_error('{% unmatching delimiters }}', 'UnexpectedClosingValueError')
-		check_load_error('{{ (more) unmatching delimiters %}', 'UnexpectedClosingStatementError')
+		check_load_error('{% this statement never closes', 'EXPECTED_CLOSING_STATEMENT')
+		check_load_error('{{ nor does this value } }', 'EXPECTED_CLOSING_VALUE')
+		check_load_error('unexpected closing delimiter }}', 'UNEXPECTED_CLOSING_VALUE')
+		check_load_error('another unexpected closing delimiter %}', 'UNEXPECTED_CLOSING_STATEMENT')
+		check_load_error('{% unmatching delimiters }}', 'UNEXPECTED_CLOSING_VALUE')
+		check_load_error('{{ (more) unmatching delimiters %}', 'UNEXPECTED_CLOSING_STATEMENT')
 
-		check_load_error('nothing after value opening {{', 'EmptyValueError')
-		check_load_error('nothing after statement opening {%', 'EmptyStatementError')
-		check_load_error('empty value {{}} oopsy!', 'EmptyValueError')
-		check_load_error('empty statement {%%} oops again!', 'EmptyStatementError')
+		check_load_error('empty value {{}} oopsy!', 'EMPTY_VALUE')
+		check_load_error('empty statement {%%} oops again!', 'EMPTY_STATEMENT')
 	end)
 
 	it('invalid generated code', function()
 		local invalid_code = molde.load '{% this is invalid Lua code %}'
 		assert.is_function(invalid_code)
-		assert.has_error(invalid_code)
+		assert.is_nil(invalid_code())
 		invalid_code = molde.load '{% if without_then %}{% end %}'
 		assert.is_function(invalid_code)
-		assert.has_error(invalid_code)
+		assert.is_nil(invalid_code())
 	end)
 
 	it('assignment on template sandboxed env', function()
@@ -59,9 +58,10 @@ describe('Molde load function', function()
 			local world = "is not enough"
 		%}{{ hello }}]]
 		local values = {hello = "not used"}
-		local result, env = assign_template(values)
+		local result, env = assign_template(values, _ENV)
 		assert.equals('Hello world', result)
 		assert.equals('world', env.hello)
+		assert.is_nil(_ENV.hello)
 		assert.is_nil(env.world)
 		assert.equals("not used", values.hello)
 	end)
