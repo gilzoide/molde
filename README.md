@@ -124,7 +124,7 @@ is available at [github pages](http://gilzoide.github.io/molde).
 
 To generate:
 
-	$ ldoc ldoc/ -d docs
+	$ ldoc . -d docs
 
 
 Change log
