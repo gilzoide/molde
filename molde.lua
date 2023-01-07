@@ -299,7 +299,7 @@ end
 
 --- Compiles the template, returning a closure that executes the substitution.
 --
--- The returned function behaves as described in `__process_template_function`.
+-- The returned function behaves as described in `TemplateFunctionPrototype`.
 --
 -- @param template  Template string
 -- @param[opt='molde generator'] chunk_name  Name of the chunk for error messages
@@ -379,12 +379,12 @@ end
 --
 -- The environment is sandboxed, so assigning variables directly to it won't
 -- affect the original tables. Variable lookup order: local environment,
--- `values`, `env`. The `env` table serves as a fallback
--- environment, and is useful when you want to sandbox builtin Lua functions.
+-- `values`, `env`. The `env` table serves as a fallback environment, and is
+-- useful when you want to sandbox builtin Lua functions.
 --
 -- @raise When the generated code is invalid
 --
--- @function __process_template_function
+-- @function TemplateFunctionPrototype
 -- @param[opt] values  Table with the values to substitute
 -- @param[optchain=_G] env  Fallback environment
 --

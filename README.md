@@ -132,6 +132,11 @@ To generate:
 Change log
 ----------
 
++ 2.0.0 - Removed dependency on LPegLabel in favor of a pure streaming parser,
+  added `molde.tokenize`, changed `molde.parse` function to be an iterator
+  instead of returning table, move doc comments to source file, changed
+  `string_bracket_level` to be a function argument instead of module-wide
+  configuration, change `molde.load` to return `nil` + error instead of raising.
 + 1.0.1 - Fix error handling for matching on LpegLabel v1.5
 + 1.0.0 - Updated to use LpegLabel version 1.5+
 + 0.1.6 - Support for Lua 5.1
