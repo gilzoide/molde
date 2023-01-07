@@ -1,0 +1,592 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>molde</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Tables">Tables</a></li>
+<li><a href="#Fields">Fields</a></li>
+<li><a href="#Internal_functions">Internal functions </a></li>
+<li><a href="#Functions">Functions </a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="nowrap">
+  <li><strong>molde</strong></li>
+</ul>
+<h2>Topics</h2>
+<ul class="">
+  <li><a href="topics/README.md.html">README</a></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>molde</code></h1>
+<p>
+
+</p>
+<p>
+
+</p>
+
+
+<h2><a href="#Tables">Tables</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#Token">Token</a></td>
+	<td class="summary">Tokens returned by <a href="index.html#tokenize">tokenize</a></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ParseState">ParseState</a></td>
+	<td class="summary">Parse states returned by <a href="index.html#parse">parse</a></td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#ParseError">ParseError</a></td>
+	<td class="summary">Parse errors that can occur in a template</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#VERSION">VERSION</a></td>
+	<td class="summary">Module version: 2.0.0</td>
+	</tr>
+</table>
+<h2><a href="#Internal_functions">Internal functions </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#tokenize">tokenize (template)</a></td>
+	<td class="summary">Tokenize template, returning a coroutine that yields pairs of <a href="index.html#Token">Token</a>, <a href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#parse">parse (template)</a></td>
+	<td class="summary">Parse template, returning a coroutine that yields pairs of <a href="index.html#ParseState">ParseState</a>, <a href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a>.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#compile">compile (template[, string_bracket_level=1])</a></td>
+	<td class="summary">Compiles a string with contents to Lua code that generates the (hopefully)
+ desired result.</td>
+	</tr>
+</table>
+<h2><a href="#Functions">Functions </a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#load">load (template[, chunk_name='molde generator'[, string_bracket_level=1]])</a></td>
+	<td class="summary">Compiles the template, returning a closure that executes the substitution.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#loadfile">loadfile (filename[, chunk_name=filename[, string_bracket_level=1]])</a></td>
+	<td class="summary">Same as <a href="index.html#load">molde.load</a>, but loads the template from a file.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#TemplateFunctionPrototype">TemplateFunctionPrototype ([values[, env=_G]])</a></td>
+	<td class="summary">This is the prototype of the function returned by <a href="index.html#load">molde.load</a> and
+ <a href="index.html#loadfile">molde.loadfile</a>.</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2 class="section-header "><a name="Tables"></a>Tables</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "Token"></a>
+    <strong>Token</strong>
+    </dt>
+    <dd>
+    Tokens returned by <a href="index.html#tokenize">tokenize</a>
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">LITERAL</span>
+        Literal token, accompanied by the read literal value
+        </li>
+        <li><span class="parameter">NEWLINE</span>
+        New line token, accompanied by it's value "\n"
+        </li>
+        <li><span class="parameter">VALUE_BEGIN</span>
+        Begin value token, accompanied by it's value "{{"
+        </li>
+        <li><span class="parameter">VALUE_END</span>
+        End value token, accompanied by it's value "}}"
+        </li>
+        <li><span class="parameter">STATEMENT_BEGIN</span>
+        Begin statement token, accompanied by it's value "{%"
+        </li>
+        <li><span class="parameter">STATEMENT_END</span>
+        End statement token, accompanied by it's value "}}"
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ParseState"></a>
+    <strong>ParseState</strong>
+    </dt>
+    <dd>
+    Parse states returned by <a href="index.html#parse">parse</a>
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">LITERAL</span>
+        Parser read a literal, accompanied by the read text
+        </li>
+        <li><span class="parameter">VALUE</span>
+        Parser read a value, accompanied by the text between "{{" and "}}"
+        </li>
+        <li><span class="parameter">STATEMENT</span>
+        Parser read a statement, accompanied by the text between "{%" and "%}"
+        </li>
+        <li><span class="parameter">ERROR</span>
+        Parser error, accompanied by the corresponding <a href="index.html#ParseError">ParseError</a>
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "ParseError"></a>
+    <strong>ParseError</strong>
+    </dt>
+    <dd>
+    Parse errors that can occur in a template
+
+
+    <h3>Fields:</h3>
+    <ul>
+        <li><span class="parameter">EXPECTED_CLOSING_VALUE</span>
+        "closing '}}' expected"
+        </li>
+        <li><span class="parameter">EXPECTED_CLOSING_STATEMENT</span>
+        "closing '%}' expected"
+        </li>
+        <li><span class="parameter">UNEXPECTED_OPENING_VALUE</span>
+        "unexpected opening '{{' found"
+        </li>
+        <li><span class="parameter">UNEXPECTED_OPENING_STATEMENT</span>
+        "unexpected opening '{%' found"
+        </li>
+        <li><span class="parameter">UNEXPECTED_CLOSING_VALUE</span>
+        "unexpected closing '}}' found"
+        </li>
+        <li><span class="parameter">UNEXPECTED_CLOSING_STATEMENT</span>
+        "unexpected closing '%}' found"
+        </li>
+        <li><span class="parameter">EMPTY_VALUE</span>
+        "empty value between '{{' and '}}'"
+        </li>
+        <li><span class="parameter">EMPTY_STATEMENT</span>
+        "empty statement between '{%' and '%}'"
+        </li>
+    </ul>
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Fields"></a>Fields</h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "VERSION"></a>
+    <strong>VERSION</strong>
+    </dt>
+    <dd>
+    Module version: 2.0.0
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Internal_functions"></a>Internal functions </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "tokenize"></a>
+    <strong>tokenize (template)</strong>
+    </dt>
+    <dd>
+    Tokenize template, returning a coroutine that yields pairs of <a href="index.html#Token">Token</a>, <a href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">template</span>
+          Text string
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        <a href="index.html#Token">Token</a>, <a href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> pair iterator
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">for</span> token, value <span class="keyword">in</span> molde.tokenize(template_text) <span class="keyword">do</span>
+    <span class="keyword">if</span> token == molde.Token.LITERAL <span class="keyword">then</span>
+        <span class="global">print</span>(<span class="string">'Literal found: '</span>, value)
+    <span class="keyword">elseif</span> token == molde.Token.NEWLINE <span class="keyword">then</span>
+        <span class="global">print</span>(<span class="string">'New line found'</span>, value == <span class="string">'\n'</span>)
+    <span class="keyword">elseif</span> token == molde.Token.VALUE_BEGIN <span class="keyword">then</span>
+        <span class="global">print</span>(<span class="string">'Value begin found'</span>, value == <span class="string">'{{'</span>)
+    <span class="comment">-- ...
+</span>    <span class="keyword">end</span>
+<span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "parse"></a>
+    <strong>parse (template)</strong>
+    </dt>
+    <dd>
+    Parse template, returning a coroutine that yields pairs of <a href="index.html#ParseState">ParseState</a>, <a href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">template</span>
+          Text string
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+          <a href="index.html#ParseState">ParseState</a>, <a href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a> pair iterator.
+   The parser will stop at the first error it encounters.
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="keyword">for</span> parse_state, value <span class="keyword">in</span> molde.parse(template_text) <span class="keyword">do</span>
+    <span class="keyword">if</span> parse_state == molde.ParseState.LITERAL <span class="keyword">then</span>
+        <span class="global">print</span>(<span class="string">'Literal found: '</span>, value)
+    <span class="keyword">elseif</span> parse_state == molde.ParseState.VALUE <span class="keyword">then</span>
+        <span class="global">print</span>(<span class="string">'{{ Value found }}'</span>, value)
+    <span class="keyword">elseif</span> parse_state == molde.ParseState.STATEMENT <span class="keyword">then</span>
+        <span class="global">print</span>(<span class="string">'{% Statement found %}'</span>, value)
+    <span class="keyword">else</span>  <span class="comment">-- parse_state == molde.ParseState.ERROR
+</span>        <span class="global">error</span>(<span class="string">'Parse error: '</span> .. value)
+    <span class="keyword">end</span>
+<span class="keyword">end</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "compile"></a>
+    <strong>compile (template[, string_bracket_level=1])</strong>
+    </dt>
+    <dd>
+    Compiles a string with contents to Lua code that generates the (hopefully)
+ desired result. </p>
+
+<p> The code generated for literals use Lua's long strings, with a level of
+ <code>string_bracket_level</code> (default: 1).
+ You should set it to a higher level if your literal may contain the string <code>&quot;]=]&quot;</code>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">template</span>
+          Template string to be compiled
+        </li>
+        <li><span class="parameter">string_bracket_level</span>
+          Long string bracket level, used to create the necessary string delimiters for literals:
+  <code>string.rep(&apos;=&apos;, string_bracket_level)</code>
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Generated code
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Parse error message</li>
+    </ol>
+
+
+
+
+</dd>
+</dl>
+    <h2 class="section-header "><a name="Functions"></a>Functions </h2>
+
+    <dl class="function">
+    <dt>
+    <a name = "load"></a>
+    <strong>load (template[, chunk_name='molde generator'[, string_bracket_level=1]])</strong>
+    </dt>
+    <dd>
+    Compiles the template, returning a closure that executes the substitution. </p>
+
+<p> The returned function behaves as described in <a href="index.html#TemplateFunctionPrototype">TemplateFunctionPrototype</a>.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">template</span>
+          Template string
+        </li>
+        <li><span class="parameter">chunk_name</span>
+          Name of the chunk for error messages
+         (<em>default</em> 'molde generator')
+        </li>
+        <li><span class="parameter">string_bracket_level</span>
+          Long string bracket level, forwarded to <a href="index.html#compile">molde.compile</a>
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        Template processor
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+        Parse error message</li>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+        Template process function call error message</li>
+    </ol>
+
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">hello_template = molde.<span class="global">load</span>(<span class="string">[[Hello {{ name or "world" }}]]</span>)
+hello = hello_template()
+<span class="global">print</span>(hello) <span class="comment">-- "Hello world"</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "loadfile"></a>
+    <strong>loadfile (filename[, chunk_name=filename[, string_bracket_level=1]])</strong>
+    </dt>
+    <dd>
+    Same as <a href="index.html#load">molde.load</a>, but loads the template from a file. </p>
+
+<p> Uses <code>filename</code> as chunkname by default.</p>
+
+<p> Every caveat for <a href="index.html#load">molde.load</a> applies.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">filename</span>
+          Template file path
+        </li>
+        <li><span class="parameter">chunk_name</span>
+          Name of the chunk for error messages
+         (<em>default</em> filename)
+        </li>
+        <li><span class="parameter">string_bracket_level</span>
+          Long string bracket level, forwarded to <a href="index.html#load">molde.load</a>
+         (<em>default</em> 1)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+           <span class="types"><span class="type">function</span></span>
+        Template processor
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+        File open error</li>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+        Parse error</li>
+    </ol>
+     <h3>Or</h3>
+    <ol>
+        <li>
+           <span class="types"><span class="type">nil</span></span>
+
+
+</li>
+        <li>
+        Template process function call error message</li>
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#load">molde.load</a>
+    </ul>
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example"><span class="comment">-- hello_template_file contents == "literal {{ value }} {% statement %}"
+</span>hello_template = molde.<span class="global">loadfile</span>(<span class="string">"hello_template_file"</span>)
+hello = hello_template()
+<span class="global">print</span>(hello) <span class="comment">-- "Hello world"</span></pre>
+    </ul>
+
+</dd>
+    <dt>
+    <a name = "TemplateFunctionPrototype"></a>
+    <strong>TemplateFunctionPrototype ([values[, env=_G]])</strong>
+    </dt>
+    <dd>
+    This is the prototype of the function returned by <a href="index.html#load">molde.load</a> and
+ <a href="index.html#loadfile">molde.loadfile</a>. </p>
+
+<p> The environment is sandboxed, so assigning variables directly to it won't
+ affect the original tables. Variable lookup order: local environment,
+ <code>values</code>, <code>env</code>. The <code>env</code> table serves as a fallback environment, and is
+ useful when you want to sandbox builtin Lua functions.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">values</span>
+          Table with the values to substitute
+         (<em>optional</em>)
+        </li>
+        <li><span class="parameter">env</span>
+          Fallback environment
+         (<em>default</em> _G)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.4">string</a></span>
+        Processed template</li>
+        <li>
+           <span class="types"><a class="type" href="https://www.lua.org/manual/5.1/manual.html#5.5">table</a></span>
+        The sandboxed environment used</li>
+    </ol>
+
+    <h3>Raises:</h3>
+    When the generated code is invalid
+
+
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">hello_template = molde.<span class="global">load</span>(<span class="string">[[
+{% name = (name or "world") .. "!!!" %}
+Hello {{ name }}
+]]</span>)
+message, template_env = hello_template()
+<span class="global">print</span>(message, template_env.name) <span class="comment">-- "Hello world!!!"  "world!!!"
+</span>values = { name = <span class="string">"gilzoide"</span> }
+message, template_env = hello_template(values)
+<span class="global">print</span>(message, values.name, template_env.name) <span class="comment">-- "Hello gilzoide!!!"  "gilzoide"  "gilzoide!!!"
+</span>env = { name = <span class="string">"y'all"</span> }
+message, template_env = hello_template(values, env)
+<span class="global">print</span>(message, template_env.name) <span class="comment">-- "Hello gilzoide!!!"  "gilzoide!!!"
+</span>message, template_env = hello_template(<span class="keyword">nil</span>, env)
+<span class="global">print</span>(message, env.name, template_env.name) <span class="comment">-- "Hello y'all!!!"  "y'all"  "y'all!!!"</span></pre>
+    </ul>
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.6</a></i>
+<i style="float:right;">Last updated 2023-01-07 14:08:23 </i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
